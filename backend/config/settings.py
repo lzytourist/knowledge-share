@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'apps.users.apps.UsersConfig',
+    'apps.workspaces.apps.WorkspacesConfig',
 ]
 
 AUTH_USER_MODEL = 'users.User'
