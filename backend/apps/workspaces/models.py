@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.db import models
 
 
@@ -37,3 +38,25 @@ class Role(models.Model):
 
     class Meta:
         db_table = 'workspace_roles'
+
+
+class WorkspaceMembership(models.Model):
+    workspace = models.ForeignKey(
+        to=Workspace,
+        on_delete=models.CASCADE,
+        related_name='memberships',
+    )
+    user = models.ForeignKey(
+        to=get_user_model(),
+        on_delete=models.CASCADE,
+        related_name='memberships',
+    )
+    role = models.ForeignKey(
+        to=Role,
+        on_delete=models.CASCADE,
+        related_name='memberships',
+    )
+
+    class Meta:
+        db_table = 'workspace_memberships'
+        unique_together = ('workspace', 'user', 'role')
