@@ -1,9 +1,13 @@
 from django.urls import path
-from rest_framework.routers import SimpleRouter
+from rest_framework.routers import DefaultRouter
 
-from apps.workspaces.views import WorkspacesViewSet
+from apps.workspaces.views import WorkspacesViewSet, RoleViewSet, PermissionViewSet
 
-router = SimpleRouter()
-router.register('', WorkspacesViewSet, basename='workspaces')
+router = DefaultRouter()
+router.register('roles', RoleViewSet, basename='role')
+router.register('permissions', PermissionViewSet, basename='permission')
+router.register('', WorkspacesViewSet, basename='workspace')
 
-urlpatterns = [] + router.urls
+urlpatterns = []
+
+urlpatterns += router.urls
