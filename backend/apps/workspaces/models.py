@@ -1,5 +1,5 @@
 from django.contrib.auth import get_user_model
-from django.db import models
+from django.db import models, connection
 
 
 class Workspace(models.Model):
@@ -19,10 +19,39 @@ class Workspace(models.Model):
         ordering = ['-created_at']
 
 
+class PermissionManager(models.Manager):
+    def _get_dependency_list(self, permission_id):
+        """Fetch all the IDs of depending on permissions."""
+        with connection.cursor() as cursor:
+            cursor.execute(f"""
+            WITH RECURSIVE `dependency_chain` AS (
+                SELECT `id`, `depends_on_id`
+                FROM {self.model._meta.db_table}
+                WHERE `id` = %s
+                UNION
+                SELECT `p`.`id`, `p`.`depends_on_id`
+                FROM {self.model._meta.db_table} `p`
+                JOIN dependency_chain d ON `p`.`id` = `d`.`depends_on_id`
+            )
+            SELECT `id`
+            FROM `dependency_chain`
+            WHERE `id` = %s
+            """, [permission_id, permission_id])
+
+            ids = [row[0] for row in cursor.fetchall()]
+        return ids
+
+    def get_dependency_list(self, permission_id):
+        ids = self._get_dependency_list(permission_id)
+        return self.filter(id__in=ids)
+
+
 class Permission(models.Model):
     label = models.CharField(max_length=100)
     method_name = models.CharField(max_length=100, unique=True)
     depends_on = models.ForeignKey('self', on_delete=models.PROTECT)
+
+    objects = PermissionManager()
 
     def __str__(self):
         return self.label
