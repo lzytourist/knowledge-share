@@ -49,7 +49,7 @@ class PermissionManager(models.Manager):
 class Permission(models.Model):
     label = models.CharField(max_length=100)
     method_name = models.CharField(max_length=100, unique=True)
-    depends_on = models.ForeignKey('self', on_delete=models.PROTECT)
+    depends_on = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True)
 
     objects = PermissionManager()
 
