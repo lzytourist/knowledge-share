@@ -27,7 +27,7 @@ class PermissionManager(models.Manager):
             WITH RECURSIVE `dependency_chain` AS (
                 SELECT `id`, `depends_on_id`
                 FROM {self.model._meta.db_table}
-                WHERE `id` = %s
+                WHERE `id` = {permission_id}
                 UNION
                 SELECT `p`.`id`, `p`.`depends_on_id`
                 FROM {self.model._meta.db_table} `p`
