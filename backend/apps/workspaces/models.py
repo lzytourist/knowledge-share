@@ -16,6 +16,7 @@ class Workspace(models.Model):
         indexes = [
             models.Index(fields=['name']),
         ]
+        ordering = ['-created_at']
 
 
 class Permission(models.Model):
