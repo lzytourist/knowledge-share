@@ -40,6 +40,7 @@ class Role(models.Model):
 
     class Meta:
         db_table = 'workspace_roles'
+        ordering = ['workspace', 'id']
 
 
 class WorkspaceMembership(models.Model):
