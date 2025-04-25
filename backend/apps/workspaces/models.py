@@ -31,7 +31,8 @@ class Permission(models.Model):
 
 class Role(models.Model):
     label = models.CharField(max_length=100)
-    permissions = models.ManyToManyField(Permission)
+    workspace = models.ForeignKey(Workspace, on_delete=models.CASCADE)
+    permissions = models.ManyToManyField(Permission, blank=True)
 
     def __str__(self):
         return self.label
