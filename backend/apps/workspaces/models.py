@@ -21,7 +21,8 @@ class Workspace(models.Model):
 
 class Permission(models.Model):
     label = models.CharField(max_length=100)
-    codename = models.CharField(max_length=100, unique=True)
+    method_name = models.CharField(max_length=100, unique=True)
+    depends_on = models.ForeignKey('self', on_delete=models.PROTECT)
 
     def __str__(self):
         return self.label
