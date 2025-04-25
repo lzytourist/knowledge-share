@@ -35,8 +35,8 @@ class PermissionManager(models.Manager):
             )
             SELECT `id`
             FROM `dependency_chain`
-            WHERE `id` = %s
-            """, [permission_id, permission_id])
+            WHERE `id` = {permission_id}
+            """)
 
             ids = [row[0] for row in cursor.fetchall()]
         return ids
