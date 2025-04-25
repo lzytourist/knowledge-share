@@ -56,6 +56,12 @@ class Permission(models.Model):
     def __str__(self):
         return self.label
 
+    def clean(self):
+        if self.depends_on_id:
+            depends_on = Permission.objects.get_dependency_list(self.depends_on_id)
+            if self.id in depends_on.values_list('id', flat=True):
+                raise ValidationError('Circular dependency detected')
+
     class Meta:
         db_table = 'permissions'
 
