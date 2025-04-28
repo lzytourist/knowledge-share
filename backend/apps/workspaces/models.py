@@ -36,7 +36,6 @@ class PermissionManager(models.Manager):
             )
             SELECT id
             FROM dependency_chain
-            WHERE id = {permission_id}
             """)
 
             ids = [row[0] for row in cursor.fetchall()]
@@ -49,7 +48,8 @@ class PermissionManager(models.Manager):
 
 class Permission(models.Model):
     label = models.CharField(max_length=100)
-    method_name = models.CharField(max_length=100, unique=True)
+    model = models.CharField(max_length=100)
+    method_name = models.CharField(max_length=100)
     depends_on = models.ForeignKey('self', on_delete=models.PROTECT, null=True, blank=True)
 
     objects = PermissionManager()
@@ -65,6 +65,8 @@ class Permission(models.Model):
 
     class Meta:
         db_table = 'permissions'
+        unique_together = ('model', 'method_name')
+        ordering = ['model', 'id']
 
 
 class Role(models.Model):
