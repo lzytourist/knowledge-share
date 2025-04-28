@@ -58,3 +58,12 @@ class User(AbstractBaseUser):
 
     class Meta:
         db_table = 'users'
+
+
+class AccountActivationToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='activation_tokens')
+    token = models.CharField(max_length=255)
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        db_table = 'account_activation_tokens'
