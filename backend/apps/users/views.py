@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.users.models import User
-from apps.users.serializers import UserSerializer, PasswordChangeSerializer
+from apps.users.serializers import UserSerializer, PasswordChangeSerializer, AccountActivationSerializer
 from apps.users.tasks import send_activation_and_password_reset
 
 
@@ -44,3 +44,14 @@ class PasswordChangeAPIView(APIView):
         return Response(
             data={'message': 'Password changed successfully'},
         )
+
+
+class AccountActivationAPIView(APIView):
+    serializer_class = AccountActivationSerializer
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(data={'message': 'Account activated successfully'})
