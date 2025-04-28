@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Activate Your Account</title>
+</head>
+<body>
+<h2>Welcome {{ user.name }}!</h2>
+
+<p>An account has been created with your email in our system.</p>
+
+<p>To activate your account and set your password, please click the button below:</p>
+
+<p style="text-align: center; margin: 30px 0;">
+    <a href="{{ activation_link }}"
+       style="background-color: #4CAF50; color: white; padding: 12px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
+        Set Your Password
+    </a>
+</p>
+
+<p>If the button doesn't work, you can copy and paste this link into your browser:</p>
+<p><a href="{{ activation_link }}">{{ activation_link }}</a></p>
+
+<p>If this is a mistake, please ignore this email.</p>
+
+<p>Best regards,<br>Knowledge Share</p>
+</body>
+</html>
