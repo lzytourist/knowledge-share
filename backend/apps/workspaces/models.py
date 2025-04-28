@@ -25,18 +25,18 @@ class PermissionManager(models.Manager):
         """Fetch all the IDs of depending on permissions."""
         with connection.cursor() as cursor:
             cursor.execute(f"""
-            WITH RECURSIVE `dependency_chain` AS (
-                SELECT `id`, `depends_on_id`
+            WITH RECURSIVE dependency_chain AS (
+                SELECT id, depends_on_id
                 FROM {self.model._meta.db_table}
-                WHERE `id` = {permission_id}
+                WHERE id = {permission_id}
                 UNION
-                SELECT `p`.`id`, `p`.`depends_on_id`
-                FROM {self.model._meta.db_table} `p`
-                JOIN dependency_chain d ON `p`.`id` = `d`.`depends_on_id`
+                SELECT p.id, p.depends_on_id
+                FROM {self.model._meta.db_table} p
+                JOIN dependency_chain d ON p.id = d.depends_on_id
             )
-            SELECT `id`
-            FROM `dependency_chain`
-            WHERE `id` = {permission_id}
+            SELECT id
+            FROM dependency_chain
+            WHERE id = {permission_id}
             """)
 
             ids = [row[0] for row in cursor.fetchall()]
