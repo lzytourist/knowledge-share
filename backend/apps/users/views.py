@@ -53,5 +53,4 @@ class AccountActivationAPIView(APIView):
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
-        serializer.save()
         return Response(data={'message': 'Account activated successfully'})

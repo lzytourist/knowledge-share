@@ -57,6 +57,7 @@ class AccountActivationSerializer(serializers.Serializer):
 
             user = activation_token.user
             user.set_password(attrs['new_password1'])
+            user.save()
         except AccountActivationToken.DoesNotExist:
             raise serializers.ValidationError({'token': ['Invalid token']})
 
