@@ -19,7 +19,7 @@ def send_activation_and_password_reset(user_email: str, name: str):
         activation_token = get_random_string(length=32)
         send_account_created_mail_with_reset_password_link(user_email, name, activation_token)
 
-        token_expire = timezone.now() + timedelta(minutes=5)
+        token_expire = timezone.now() + timedelta(days=30)
 
         AccountActivationToken.objects.create(
             user=user,
