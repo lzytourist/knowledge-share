@@ -1,7 +1,9 @@
 import {z} from "zod";
-import {LoginSchema} from "@/lib/schemas";
+import {LoginSchema, PasswordResetRequestSchema, PasswordResetSchema} from "@/lib/schemas";
 
 export type LoginSchemaType = z.infer<typeof LoginSchema>;
+export type PasswordResetRequestType = z.infer<typeof PasswordResetRequestSchema>;
+export type PasswordResetType = z.infer<typeof PasswordResetSchema>;
 
 export interface LoginTokenType {
     access: string;

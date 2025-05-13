@@ -12,7 +12,6 @@ import {useTransition} from "react";
 import {login} from "@/actions/auth";
 import {toast} from "sonner";
 import {LockIcon} from "lucide-react";
-import {typeOf} from "uri-js/dist/esnext/util";
 
 export default function LoginForm() {
     const [pending, startTransition] = useTransition();
@@ -64,7 +63,7 @@ export default function LoginForm() {
                     <FormItem>
                         <div className={'flex items-center justify-between'}>
                             <FormLabel>Password</FormLabel>
-                            <Link className={'text-sm text-gray-400 hover:text-gray-200'} href={'#'}>Forgot your password?</Link>
+                            <Link className={'text-sm text-gray-400 hover:text-gray-200'} href={'/password-reset'}>Forgot your password?</Link>
                         </div>
                         <FormControl>
                             <Input type={'password'} {...field}/>
