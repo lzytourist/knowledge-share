@@ -5,8 +5,8 @@ from django.contrib.auth import get_user_model
 from django.utils import timezone
 from django.utils.crypto import get_random_string
 
-from apps.users.emails import send_account_created_mail_with_reset_password_link
-from apps.users.models import AccountActivationToken
+from apps.users.emails import send_account_created_mail_with_reset_password_link, send_password_reset_mail
+from apps.users.models import AccountActivationToken, PasswordResetToken
 
 User = get_user_model()
 
@@ -29,3 +29,21 @@ def send_activation_and_password_reset(user_email: str, name: str):
     except User.DoesNotExist as e:
         print(str(e))
         pass
+
+
+@shared_task
+def send_password_reset_email(user_email: str):
+    try:
+        user = User.objects.get(email=user_email)
+
+        token = get_random_string(length=32)
+
+        send_password_reset_mail(user_email=user_email, name=user.name, token=token)
+
+        PasswordResetToken.objects.create(
+            user=user,
+            token=token,
+            expires_at=timezone.now() + timedelta(minutes=15)
+        )
+    except PasswordResetToken.DoesNotExist as e:
+        print(str(e))
