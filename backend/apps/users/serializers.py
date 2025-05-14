@@ -1,8 +1,10 @@
 from django.contrib.auth import get_user_model
+from django.contrib.auth.password_validation import validate_password
+from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework import serializers
 
-from apps.users.models import AccountActivationToken
+from apps.users.models import AccountActivationToken, PasswordResetToken
 
 User = get_user_model()
 
@@ -75,9 +77,14 @@ class PasswordResetSerializer(serializers.Serializer):
     def validate(self, attrs):
         password1 = attrs.get('password1')
         password2 = attrs.get('password2')
-        
+
         if password1 != password2:
             raise serializers.ValidationError({'password2': ['Passwords do not match']})
+
+        try:
+            validate_password(password1)
+        except ValidationError as e:
+            raise serializers.ValidationError({'password1': e.messages})
 
         token = (PasswordResetToken.objects
                  .filter(token=attrs.get('token'), token__isnull=False)
