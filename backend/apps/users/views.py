@@ -1,10 +1,12 @@
+from django.utils import timezone
 from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.models import User
-from apps.users.serializers import UserSerializer, PasswordChangeSerializer, AccountActivationSerializer
-from apps.users.tasks import send_activation_and_password_reset
+from apps.users.models import User, PasswordResetToken
+from apps.users.serializers import UserSerializer, PasswordChangeSerializer, AccountActivationSerializer, \
+    PasswordResetSerializer
+from apps.users.tasks import send_activation_and_password_reset, send_password_reset_email
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -54,3 +56,38 @@ class AccountActivationAPIView(APIView):
         serializer = self.serializer_class(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(data={'message': 'Account activated successfully'})
+
+
+class PasswordResetAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+    serializer_class = PasswordResetSerializer
+
+    def post(self, request, action):
+        if action == 'send':
+            email = request.data.get('email', None)
+
+            if email is None:
+                return Response(
+                    data={'email': ['Email is required']},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            last_sent_at = PasswordResetToken.objects.filter(user__email=email).order_by('-id').first()
+            if last_sent_at and last_sent_at.expires_at > timezone.now():
+                retry_in = ((last_sent_at.expires_at - timezone.now()).seconds + 59) // 60
+                return Response(
+                    data={'message': f'Please wait {retry_in} minutes before retrying'},
+                )
+
+            send_password_reset_email.delay(email)
+
+            return Response(
+                data={'message': 'Password reset email sent successfully'},
+            )
+        else:
+            serializer = self.serializer_class(data=request.data)
+            serializer.is_valid(raise_exception=True)
+
+            return Response(
+                data={'message': 'Password reset successful'},
+            )
