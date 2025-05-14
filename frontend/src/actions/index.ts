@@ -71,7 +71,7 @@ export const getRefreshToken = async () => {
     return cookieStore.get(REFRESH_TOKEN)?.value;
 }
 
-export const setCookie = async (name: string, value: string) => {
+export const setCookie = async (name: string, value: string, expires: Date) => {
     const cookieStore = await cookies();
     cookieStore.set(name, value, {
         httpOnly: true,
