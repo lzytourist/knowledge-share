@@ -75,7 +75,8 @@ export const setCookie = async (name: string, value: string, expires: Date) => {
     const cookieStore = await cookies();
     cookieStore.set(name, value, {
         httpOnly: true,
-        sameSite: 'strict'
+        sameSite: 'strict',
+        expires: expires
     });
 };
 
