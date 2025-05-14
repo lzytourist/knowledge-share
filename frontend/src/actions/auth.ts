@@ -39,3 +39,8 @@ export const resetPassword = async (data: PasswordResetType) => {
         return e as ApiError;
     }
 };
+
+export const logout = async () => {
+    await removeCookie(ACCESS_TOKEN);
+    await removeCookie(REFRESH_TOKEN);
+};
