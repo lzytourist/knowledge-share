@@ -2,7 +2,8 @@ from django.urls import path
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from apps.users.views import UserViewSet, UpdateProfileAPIView, PasswordChangeAPIView, AccountActivationAPIView
+from apps.users.views import UserViewSet, UpdateProfileAPIView, PasswordChangeAPIView, AccountActivationAPIView, \
+    PasswordResetAPIView
 
 router = DefaultRouter()
 router.register('', UserViewSet, basename='user')
@@ -13,4 +14,5 @@ urlpatterns = [
     path('profile/', UpdateProfileAPIView.as_view(), name='me'),
     path('profile/password/', PasswordChangeAPIView.as_view(), name='password-change'),
     path('activate/', AccountActivationAPIView.as_view(), name='activate-account'),
+    path('password-reset/<str:action>/', PasswordResetAPIView.as_view(), name='password-reset'),
 ] + router.urls

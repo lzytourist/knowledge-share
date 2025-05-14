@@ -67,3 +67,12 @@ class AccountActivationToken(models.Model):
 
     class Meta:
         db_table = 'account_activation_tokens'
+
+
+class PasswordResetToken(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='password_reset_tokens')
+    token = models.CharField(max_length=255)
+    expires_at = models.DateTimeField()
+
+    class Meta:
+        db_table = 'password_reset_tokens'
