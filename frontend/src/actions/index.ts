@@ -81,7 +81,8 @@ export const setCookie = async (name: string, value: string, expires: Date) => {
 };
 
 export const setAccessToken = async (token: string) => {
-    await setCookie(ACCESS_TOKEN, token);
+    const {exp} = jwtDecode(token);
+    await setCookie(ACCESS_TOKEN, token, new Date(exp! * 1000));
 }
 
 export const setRefreshToken = async (token: string) => {
