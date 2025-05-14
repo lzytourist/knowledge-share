@@ -86,5 +86,6 @@ export const setAccessToken = async (token: string) => {
 }
 
 export const setRefreshToken = async (token: string) => {
-    await setCookie(REFRESH_TOKEN, token);
+    const {exp} = jwtDecode(token);
+    await setCookie(REFRESH_TOKEN, token, new Date(exp! * 1000));
 }
