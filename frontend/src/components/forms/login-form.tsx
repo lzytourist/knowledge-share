@@ -73,7 +73,6 @@ export default function LoginForm() {
                 )} name={'password'}/>
                 <PendingButton
                     isPending={pending}
-                    variant={'outline'}
                     className={'cursor-pointer w-full'}>
                     Login
                     <LockIcon/>
