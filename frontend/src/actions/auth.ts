@@ -1,7 +1,8 @@
 'use server'
 
 import {ApiError, LoginSchemaType, LoginTokenType, PasswordResetRequestType, PasswordResetType} from "@/lib/types";
-import {baseAPI, setAccessToken, setRefreshToken} from "@/actions/index";
+import {baseAPI, removeCookie, setAccessToken, setRefreshToken} from "@/actions/index";
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "@/lib/constants";
 
 export const login = async (data: LoginSchemaType) => {
     try {
