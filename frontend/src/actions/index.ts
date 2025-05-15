@@ -1,10 +1,10 @@
 'use server'
 
 import {cookies} from "next/headers";
+import {ACCESS_TOKEN, REFRESH_TOKEN} from "@/lib/constants";
+import {jwtDecode} from "jwt-decode";
 
 const BASE_API = process.env.API_URL;
-const ACCESS_TOKEN = 'access';
-const REFRESH_TOKEN = 'refresh';
 
 interface FetchAPIOptions extends Omit<RequestInit, 'body' | 'headers'> {
     token?: string;
@@ -71,18 +71,26 @@ export const getRefreshToken = async () => {
     return cookieStore.get(REFRESH_TOKEN)?.value;
 }
 
-export const setCookie = async (name: string, value: string) => {
+export const setCookie = async (name: string, value: string, expires: Date) => {
     const cookieStore = await cookies();
     cookieStore.set(name, value, {
         httpOnly: true,
-        sameSite: 'strict'
+        sameSite: 'strict',
+        expires: expires
     });
 };
 
 export const setAccessToken = async (token: string) => {
-    await setCookie(ACCESS_TOKEN, token);
+    const {exp} = jwtDecode(token);
+    await setCookie(ACCESS_TOKEN, token, new Date(exp! * 1000));
 }
 
 export const setRefreshToken = async (token: string) => {
-    await setCookie(REFRESH_TOKEN, token);
+    const {exp} = jwtDecode(token);
+    await setCookie(REFRESH_TOKEN, token, new Date(exp! * 1000));
+}
+
+export const removeCookie = async (name: string) => {
+    const cookieStore = await cookies();
+    cookieStore.delete(name);
 }

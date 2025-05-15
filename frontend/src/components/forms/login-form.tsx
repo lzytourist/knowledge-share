@@ -12,9 +12,11 @@ import {useTransition} from "react";
 import {login} from "@/actions/auth";
 import {toast} from "sonner";
 import {LockIcon} from "lucide-react";
+import {useRouter} from "next/navigation";
 
 export default function LoginForm() {
     const [pending, startTransition] = useTransition();
+    const router = useRouter();
 
     const form = useForm<LoginSchemaType>({
         resolver: zodResolver(LoginSchema),
@@ -30,6 +32,7 @@ export default function LoginForm() {
             if (typeof token == "boolean" && token) {
                 toast.success('Login successful');
                 form.reset();
+                router.push('/');
             } else {
                 if (token.status === 400) {
                     const errors = token.data as FieldError;
