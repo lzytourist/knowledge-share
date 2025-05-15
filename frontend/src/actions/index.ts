@@ -5,8 +5,6 @@ import {ACCESS_TOKEN, REFRESH_TOKEN} from "@/lib/constants";
 import {jwtDecode} from "jwt-decode";
 
 const BASE_API = process.env.API_URL;
-const ACCESS_TOKEN = 'access';
-const REFRESH_TOKEN = 'refresh';
 
 interface FetchAPIOptions extends Omit<RequestInit, 'body' | 'headers'> {
     token?: string;
