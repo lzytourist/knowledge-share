@@ -91,3 +91,8 @@ export const setRefreshToken = async (token: string) => {
     const {exp} = jwtDecode(token);
     await setCookie(REFRESH_TOKEN, token, new Date(exp! * 1000));
 }
+
+export const removeCookie = async (name: string) => {
+    const cookieStore = await cookies();
+    cookieStore.delete(name);
+}
