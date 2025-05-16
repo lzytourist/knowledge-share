@@ -38,6 +38,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'rest_framework_simplejwt',
+    'django_celery_beat',
 
     'apps.users.apps.UsersConfig',
     'apps.workspaces.apps.WorkspacesConfig',

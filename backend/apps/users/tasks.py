@@ -47,3 +47,18 @@ def send_password_reset_email(user_email: str):
         )
     except PasswordResetToken.DoesNotExist as e:
         print(str(e))
+
+
+@shared_task
+def remove_expired_password_reset_tokens():
+    try:
+        qs = PasswordResetToken.objects.filter(
+            expires_at__lt=timezone.now()
+        )
+
+        count = qs.count()
+        if count > 0:
+            qs.delete()
+            print(f'Cleared {count} password reset token')
+    except PasswordResetToken.DoesNotExist as e:
+        print(str(e))
