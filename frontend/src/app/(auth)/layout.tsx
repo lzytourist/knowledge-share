@@ -1,28 +1,30 @@
 import {AppSidebar} from "@/components/app-sidebar";
-import {ChartAreaInteractive} from "@/components/chart-area-interactive";
-import {SectionCards} from "@/components/section-cards";
 import {SiteHeader} from "@/components/site-header";
 import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
 import {ReactNode} from "react";
+import {getAuthUser} from "@/actions/auth";
+import {AuthUser} from "@/lib/types";
+import {ScrollArea} from "@/components/ui/scroll-area";
 
-export default function Layout({children}: { children: ReactNode }) {
-    return (
-        <SidebarProvider>
-            <AppSidebar variant="inset"/>
-            <SidebarInset>
-                <SiteHeader/>
-                <div className="flex flex-1 flex-col">
-                    <div className="@container/main flex flex-1 flex-col gap-2">
-                        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
-                            <SectionCards/>
-                            <div className="px-4 lg:px-6">
-                                <ChartAreaInteractive/>
-                            </div>
-                            {children}
-                        </div>
-                    </div>
-                </div>
-            </SidebarInset>
-        </SidebarProvider>
-    );
+
+export default async function Layout({children}: { children: ReactNode }) {
+  const user = await getAuthUser();
+
+  return (
+    <SidebarProvider>
+      <AppSidebar user={user as AuthUser} variant="inset"/>
+      <SidebarInset>
+        <SiteHeader/>
+        <ScrollArea className={'max-h-[94vh]'}>
+          <div className="flex flex-1 flex-col">
+            <div className="@container/main flex flex-1 flex-col gap-2">
+              <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6 px-4 lg:px-6">
+                {children}
+              </div>
+            </div>
+          </div>
+        </ScrollArea>
+      </SidebarInset>
+    </SidebarProvider>
+  );
 }
