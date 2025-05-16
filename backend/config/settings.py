@@ -151,3 +151,19 @@ CELERY_BROKER_URL = os.environ.get('CELERY_BROKER_URL')
 CELERY_RESULT_BACKEND = os.environ.get('CELERY_RESULT_BACKEND')
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_TASK_SERIALIZER = 'json'
+
+STORAGES = {
+    "default": {
+        "BACKEND": "storages.backends.azure_storage.AzureStorage",
+        "OPTIONS": {
+            'expiration_secs': 10 * 60 # 10 minutes
+        },
+    },
+    'staticfiles': {
+        'BACKEND': 'django.contrib.staticfiles.storage.StaticFilesStorage',
+    }
+}
+
+AZURE_ACCOUNT_NAME=os.environ.get('AZURE_ACCOUNT_NAME')
+AZURE_ACCOUNT_KEY=os.environ.get('AZURE_ACCOUNT_KEY')
+AZURE_CONTAINER=os.environ.get('AZURE_CONTAINER')
