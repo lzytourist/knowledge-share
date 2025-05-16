@@ -93,7 +93,7 @@ class PasswordResetSerializer(serializers.Serializer):
                  .first())
 
         if token:
-            if token.expires_at > timezone.now():
+            if token.expires_at < timezone.now():
                 raise serializers.ValidationError({'token': ['Token expired. Please create a new request.']})
 
             user = token.user
