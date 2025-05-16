@@ -27,6 +27,11 @@ class PasswordChangeSerializer(serializers.Serializer):
         if old_password == new_password:
             raise serializers.ValidationError('Passwords can\'t be the same')
 
+        try:
+            validate_password(new_password)
+        except ValidationError as e:
+            raise serializers.ValidationError({'password1': e.messages})
+
         user = self.context['request'].user
         if not user.check_password(old_password):
             raise serializers.ValidationError('In correct old password')
@@ -107,4 +112,8 @@ class PasswordResetSerializer(serializers.Serializer):
         return attrs
 
 
-
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'email')
+        extra_kwargs = {'id': {'read_only': True}}

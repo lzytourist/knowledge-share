@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from apps.users.models import User, PasswordResetToken
 from apps.users.serializers import UserSerializer, PasswordChangeSerializer, AccountActivationSerializer, \
-    PasswordResetSerializer
+    PasswordResetSerializer, ProfileSerializer
 from apps.users.tasks import send_activation_and_password_reset, send_password_reset_email
 
 
@@ -23,7 +23,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
 
 class ProfileAPIView(APIView):
-    serializer_class = UserSerializer
+    serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -44,7 +44,7 @@ class PasswordChangeAPIView(APIView):
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(

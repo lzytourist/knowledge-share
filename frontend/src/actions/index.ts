@@ -3,6 +3,7 @@
 import {cookies} from "next/headers";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "@/lib/constants";
 import {jwtDecode} from "jwt-decode";
+import {ApiError} from "@/lib/types";
 
 const BASE_API = process.env.API_URL;
 
@@ -93,4 +94,19 @@ export const setRefreshToken = async (token: string) => {
 export const removeCookie = async (name: string) => {
     const cookieStore = await cookies();
     cookieStore.delete(name);
+}
+
+export const authenticatedPostRequest = async <TResponse>(url: string, data: string): Promise<TResponse | ApiError> => {
+    try {
+        return await baseAPI<TResponse>(url, {
+            method: 'POST',
+            token: await getAccessToken(),
+            body: data,
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+    } catch (e) {
+        return e as ApiError;
+    }
 }
