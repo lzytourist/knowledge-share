@@ -54,7 +54,6 @@ export const logout = async () => {
 };
 
 export const getAuthUser = async () => {
-    console.log('in auth user')
     try {
         return await baseAPI<AuthUser>('users/profile/', {
             method: 'GET',
