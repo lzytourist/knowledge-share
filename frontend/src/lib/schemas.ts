@@ -17,3 +17,17 @@ export const PasswordResetSchema = z.object({
     message: 'Password do not match',
     path: ['password2']
 });
+
+export const ProfileUpdateSchema = z.object({
+    name: z.string().min(1, {message: 'Please enter your name'}),
+    email: z.string().email()
+});
+
+export const PasswordUpdateSchema = z.object({
+    oldPassword: z.string().min(1, {message: 'This field is required'}),
+    password1: z.string().min(8, {message: 'Password must be at least of 8 characters'}),
+    password2: z.string()
+}).refine((data) => data.password1 === data.password2, {
+    message: 'Password do not match',
+    path: ['password2']
+});
