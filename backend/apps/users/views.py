@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return response
 
 
-class UpdateProfileAPIView(APIView):
+class ProfileAPIView(APIView):
     serializer_class = UserSerializer
     permission_classes = [permissions.IsAuthenticated]
 
@@ -33,6 +33,10 @@ class UpdateProfileAPIView(APIView):
         return Response(
             data={'message': 'Profile updated successfully'},
         )
+
+    def get(self, request):
+        serializer = self.serializer_class(instance=request.user)
+        return Response(data=serializer.data)
 
 
 class PasswordChangeAPIView(APIView):

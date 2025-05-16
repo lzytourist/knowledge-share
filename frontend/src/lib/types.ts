@@ -23,3 +23,9 @@ export interface ApiError {
     status?: number;
     data?: UnauthorizedError | FieldError;
 }
+
+export interface AuthUser {
+    id: string;
+    name: string;
+    email: string;
+}
