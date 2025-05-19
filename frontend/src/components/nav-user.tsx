@@ -31,14 +31,25 @@ import {
 import {AuthUser} from "@/lib/types";
 import {getFirstCharacters} from "@/lib/utils";
 import Link from "next/link";
+import {logout} from "@/actions/auth";
+import {toast} from "sonner";
+import {useRouter} from "next/navigation";
 
 export function NavUser({
   user,
 }: {
   user: AuthUser
 }) {
-  const { isMobile } = useSidebar()
-  
+  const { isMobile } = useSidebar();
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    await logout();
+    toast.success('Logged out');
+    router.push('/');
+  }
+
   return (
     <SidebarMenu>
       <SidebarMenuItem>
@@ -99,7 +110,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem className={'cursor-pointer'} onClick={handleLogout}>
               <IconLogout />
               Log out
             </DropdownMenuItem>
