@@ -170,3 +170,13 @@ STORAGES = {
 AZURE_ACCOUNT_NAME=os.environ.get('AZURE_ACCOUNT_NAME')
 AZURE_ACCOUNT_KEY=os.environ.get('AZURE_ACCOUNT_KEY')
 AZURE_CONTAINER=os.environ.get('AZURE_CONTAINER')
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379',
+        'OPTIONS': {
+            'db': '8'
+        }
+    }
+}
