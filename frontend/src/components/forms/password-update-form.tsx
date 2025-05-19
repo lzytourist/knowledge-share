@@ -30,16 +30,16 @@ export default function PasswordUpdateForm() {
         old_password: data.oldPassword
       }));
 
-      if ('status' in response) {
+      if (!response.success) {
         if (response.status === 400) {
-          for (const [field, messages] of Object.entries(response.data as FieldError)) {
+          for (const [field, messages] of Object.entries(response.errors as FieldError)) {
             form.setError(field as FieldPath<PasswordUpdateSchemaType>, {
               message: messages.join(' ')
             });
           }
 
-          if ('data' in response && 'non_field_errors' in response.data!) {
-            toast.error((response.data.non_field_errors as string[]).join('. '))
+          if ('non_field_errors' in response.errors!) {
+            toast.error((response.errors.non_field_errors as string[]).join('. '))
           }
         } else {
           toast.error('Could not update password');

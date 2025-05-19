@@ -29,9 +29,9 @@ export default function ProfileUpdateForm({user}: { user: AuthUser }) {
     startTransition(async () => {
       const response = await authenticatedPostRequest<AuthUser>('users/profile/', JSON.stringify(data));
 
-      if ('status' in response) {
+      if (!response.success) {
         if (response.status === 400) {
-          for (const [field, messages] of Object.entries(response.data as FieldError)) {
+          for (const [field, messages] of Object.entries(response.errors as FieldError)) {
             form.setError(field as FieldPath<ProfileUpdateType>, {
               message: messages.join('. ')
             });

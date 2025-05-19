@@ -3,7 +3,6 @@ import {SiteHeader} from "@/components/site-header";
 import {SidebarInset, SidebarProvider} from "@/components/ui/sidebar";
 import {ReactNode} from "react";
 import {getAuthUser} from "@/actions/auth";
-import {AuthUser} from "@/lib/types";
 import {ScrollArea} from "@/components/ui/scroll-area";
 
 
@@ -12,7 +11,7 @@ export default async function Layout({children}: { children: ReactNode }) {
 
   return (
     <SidebarProvider>
-      <AppSidebar user={user as AuthUser} variant="inset"/>
+      <AppSidebar user={user.data!} variant="inset"/>
       <SidebarInset>
         <SiteHeader/>
         <ScrollArea className={'max-h-[94vh]'}>
