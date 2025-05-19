@@ -27,6 +27,11 @@ class PasswordChangeSerializer(serializers.Serializer):
         if old_password == new_password:
             raise serializers.ValidationError('Passwords can\'t be the same')
 
+        try:
+            validate_password(new_password)
+        except ValidationError as e:
+            raise serializers.ValidationError({'password1': e.messages})
+
         user = self.context['request'].user
         if not user.check_password(old_password):
             raise serializers.ValidationError('In correct old password')
@@ -107,4 +112,20 @@ class PasswordResetSerializer(serializers.Serializer):
         return attrs
 
 
+class ProfileSerializer(serializers.ModelSerializer):
+    image_link = serializers.SerializerMethodField()
 
+    class Meta:
+        model = User
+        fields = ('id', 'name', 'email', 'image_link')
+        extra_kwargs = {'id': {'read_only': True}}
+
+    def get_image_link(self, obj):
+        return self.context['request'].build_absolute_uri(obj.image.url) if obj.image else None
+
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'image',)
+        extra_kwargs = {'id': {'read_only': True}}

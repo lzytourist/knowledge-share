@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from apps.users.models import User, PasswordResetToken
 from apps.users.serializers import UserSerializer, PasswordChangeSerializer, AccountActivationSerializer, \
-    PasswordResetSerializer
+    PasswordResetSerializer, ProfileSerializer, ProfileImageSerializer
 from apps.users.tasks import send_activation_and_password_reset, send_password_reset_email
 
 
@@ -22,8 +22,8 @@ class UserViewSet(viewsets.ModelViewSet):
         return response
 
 
-class UpdateProfileAPIView(APIView):
-    serializer_class = UserSerializer
+class ProfileAPIView(APIView):
+    serializer_class = ProfileSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
@@ -34,13 +34,17 @@ class UpdateProfileAPIView(APIView):
             data={'message': 'Profile updated successfully'},
         )
 
+    def get(self, request):
+        serializer = self.serializer_class(instance=request.user, context={'request': request})
+        return Response(data=serializer.data)
+
 
 class PasswordChangeAPIView(APIView):
     serializer_class = PasswordChangeSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
-        serializer = self.serializer_class(data=request.data)
+        serializer = self.serializer_class(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(
@@ -91,3 +95,16 @@ class PasswordResetAPIView(APIView):
             return Response(
                 data={'message': 'Password reset successful'},
             )
+
+
+class ProfileImageAPIView(APIView):
+    serializer_class = ProfileImageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, instance=request.user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            data={'message': 'Profile image uploaded successfully'},
+        )
