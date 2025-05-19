@@ -3,6 +3,7 @@ from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.utils import timezone
 from rest_framework import serializers
+from storages.backends.azure_storage import AzureStorage
 
 from apps.users.models import AccountActivationToken, PasswordResetToken
 
@@ -125,6 +126,16 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 class ProfileImageSerializer(serializers.ModelSerializer):
+    def save(self, **kwargs):
+        previous_image = self.instance.image
+        user = super().save(**kwargs)
+
+        if previous_image:
+            az_storage = AzureStorage()
+            az_storage.delete(name=previous_image.name)
+
+        return user
+
     class Meta:
         model = User
         fields = ('id', 'image',)
