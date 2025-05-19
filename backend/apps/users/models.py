@@ -1,5 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.hashers import make_password
+from django.core.validators import FileExtensionValidator
 from django.db import models
 
 
@@ -47,6 +48,7 @@ class User(AbstractBaseUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     is_superuser = models.BooleanField(default=False)
+    image = models.FileField(null=True, blank=True, validators=[FileExtensionValidator(["jpg", "jpeg", "png"])])
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['name']

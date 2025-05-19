@@ -5,7 +5,8 @@ import {
   LoginSchemaType,
   LoginTokenType,
   PasswordResetRequestType,
-  PasswordResetType
+  PasswordResetType,
+  ProfileImageSchemaType
 } from "@/lib/types";
 import {baseAPI, getAccessToken, removeCookie, setAccessToken, setRefreshToken} from "@/actions/index";
 import {ACCESS_TOKEN, REFRESH_TOKEN} from "@/lib/constants";
@@ -45,6 +46,17 @@ export const logout = async () => {
 export const getAuthUser = async () => {
   return await baseAPI<AuthUser>('users/profile/', {
     method: 'GET',
+    token: await getAccessToken()
+  });
+}
+
+export const uploadProfileImage = async (data: ProfileImageSchemaType) => {
+  const formData = new FormData();
+  formData.append('image', data.image);
+
+  return await baseAPI<{ message: string }>('users/profile-image/', {
+    method: 'POST',
+    body: formData,
     token: await getAccessToken()
   });
 }

@@ -5,7 +5,7 @@ from rest_framework.views import APIView
 
 from apps.users.models import User, PasswordResetToken
 from apps.users.serializers import UserSerializer, PasswordChangeSerializer, AccountActivationSerializer, \
-    PasswordResetSerializer, ProfileSerializer
+    PasswordResetSerializer, ProfileSerializer, ProfileImageSerializer
 from apps.users.tasks import send_activation_and_password_reset, send_password_reset_email
 
 
@@ -35,7 +35,7 @@ class ProfileAPIView(APIView):
         )
 
     def get(self, request):
-        serializer = self.serializer_class(instance=request.user)
+        serializer = self.serializer_class(instance=request.user, context={'request': request})
         return Response(data=serializer.data)
 
 
@@ -95,3 +95,16 @@ class PasswordResetAPIView(APIView):
             return Response(
                 data={'message': 'Password reset successful'},
             )
+
+
+class ProfileImageAPIView(APIView):
+    serializer_class = ProfileImageSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data, instance=request.user)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            data={'message': 'Profile image uploaded successfully'},
+        )

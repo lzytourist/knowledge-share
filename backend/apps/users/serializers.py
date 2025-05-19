@@ -113,7 +113,19 @@ class PasswordResetSerializer(serializers.Serializer):
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    image_link = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ('id', 'name', 'email')
+        fields = ('id', 'name', 'email', 'image_link')
+        extra_kwargs = {'id': {'read_only': True}}
+
+    def get_image_link(self, obj):
+        return self.context['request'].build_absolute_uri(obj.image.url) if obj.image else None
+
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ('id', 'image',)
         extra_kwargs = {'id': {'read_only': True}}
